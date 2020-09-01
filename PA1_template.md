@@ -89,7 +89,9 @@ plot(meanstep_interval$interval, meanstep_interval$steps, type="l",xlab="Interva
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
-Whoch 5 minute time interval contains the most step
+
+Which 5 minute time interval contains the most step
+
 
 ```r
 max_step<-max(meanstep_interval$steps)
@@ -191,5 +193,51 @@ From the table, we see that after we fill all the NA value with the average step
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+First create new factor variable, with two level "weekday" or "weekend" based on the date column in data
+
+First denote what is weekdays / not weekend
+
+```r
+weekday<-c("Monday", "Tuesday", "Wednesday", "Thursday", 
+              "Friday")
+```
+
+Use ifelse to check if the date is in weekday. If not weekend
+
+
+```r
+wk1<-weekdays(as.Date(data2$date))
+wk<-ifelse(wk1 %in% weekday, "weekday", "weekend")
+data3<-cbind(data2,wk)
+```
+
+
+Make a plot of the 5-minute interval (x-axis) and the mean number of steps taken, averaged across all weekday days or weekend (factor)
+
+
+```r
+meanstepweekday<-aggregate(data3$steps, by=list(data3$interval, data3$wk),mean)
+colnames(meanstepweekday)<-c("interval","wk","steps")
+```
+
+Now make the plot
+
+
+```r
+library(ggplot2)
+ggplot(meanstepweekday, aes(x=interval, y=steps))+
+  geom_line()+
+  facet_grid(wk~.)+    #divide graph by factor variable
+  xlab("Interval")+ylab("Number of steps")+ #x y axis name
+  ggtitle("Average steps taken across 5 minute time intervals") #title
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+
+
+
+
+
 
 
