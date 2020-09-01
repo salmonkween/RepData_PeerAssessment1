@@ -41,11 +41,12 @@ medianstep
 
 
 ## What is the average daily activity pattern?
-Make a time series plot of the 5-minute interval(x axis) and the average 
-number of steps taken, averaged across all days (y-axis)
+Make a time series plot of the 5-minute interval(x axis) and the average number of steps taken, averaged across all days (y-axis)
+
 ```{r, echo=TRUE}
 meanstep_interval <- aggregate(data1$steps~data1$interval, data=data1, mean)
 ```
+
 Assigning name to the new data frame containing average steps by time interval
 ```{r, echo=TRUE}
 colnames(meanstep_interval)<-c("interval", "steps")
@@ -64,7 +65,60 @@ max_interval
 The 5 minute interval where there is max of average steps taken is `r max_interval`
 
 ## Imputing missing values
+Calculate the number of row with NA values
+```{r, echo=TRUE}
+totalNA<-sum(is.na(data1$steps))
+totalNA
+```
+Replacing NA value with mean value for that same interval (meanstep_interval)
+first make a new data so we can retrace our mistakes if needed
+```{r, echo=TRUE}
+data2<-data1
+```
+Now replacing the NA value with mean steps for each time interval
+```{r, echo=TRUE}
+NAlocation<-which(is.na(data2$steps))
+for (i in NAlocation) {
+    data2$steps[i]<-with(meanstep_interval, steps[interval ==data2$interval[i]])
+}
+
+```
+Now test if we replace all NA or not
+```{r, echo=TRUE}
+sum(is.na(data2))
+```
+Making histogram of total steps taken per day. Report mean and median
+First we calculate the total of steps taken by day
+```{r, echo=TRUE}
+sumstep2<-aggregate(data2$steps~data2$date, data=data2, sum)
+colnames(sumstep2)<- c("date", "steps")
+
+```
+Plug in a histogram
+
+```{r, echo=TRUE}
+hist(sumstep2$steps,xlab = "Total Steps", main = "Total steps taken each day")
+```
+
+The mean and mediantotal number of steps taken per day
+
+```{r, echo=TRUE}
+meanstep2<- mean(sumstep2$steps)
+meanstep2
+medianstep2<-median(sumstep2$steps)
+medianstep2
+```
+
+To compared with the mean and median values from the old data
+We make a new data frame
+```{r, echo=TRUE}
+compare<-data.frame(meancol=c(meanstep, meanstep2), mediancol=c(medianstep, medianstep2))
+compare
+```
+From the table, we see that after we fill all the NA value with the average step takens per interval, we have the same mean and median values
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
