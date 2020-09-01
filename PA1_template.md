@@ -226,11 +226,12 @@ Now make the plot
 
 ```r
 library(ggplot2)
-ggplot(meanstepweekday, aes(x=interval, y=steps))+
+g<-ggplot(meanstepweekday, aes(x=interval, y=steps))+
   geom_line()+
   facet_grid(wk~.)+    #divide graph by factor variable
   xlab("Interval")+ylab("Number of steps")+ #x y axis name
   ggtitle("Average steps taken across 5 minute time intervals") #title
+g
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
